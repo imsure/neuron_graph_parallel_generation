@@ -13,8 +13,10 @@ import org.apache.hadoop.mapreduce.Mapper.Context;
  * The Mapper class will generate input data for a neuron network based on the metadata provided.
  *
  */
-public class NeuronInputMapper extends Mapper<LongWritable, Text, NeuronWritable, AdjListWritable>
+public class NeuronInputMapper extends Mapper<LongWritable, Text, IntWritable, MultiWritableWrapper>
 {
+	private IntWritable neuron_id = new IntWritable();
+	private MultiWritableWrapper multi_writable = new MultiWritableWrapper();
 	private Random randn = new Random();
 	public static final float Excitatory_Prob = (float) 0.4;
 	public static final float Inhibitory_Prob = (float) 0.8;
@@ -33,7 +35,8 @@ public class NeuronInputMapper extends Mapper<LongWritable, Text, NeuronWritable
 		 * Iterate through start neuron id to end neuron id.
 		 */
 		for (int i = start_id; i <= end_id; i++) {
-			NeuronWritable neuron = generateKey(i, type);
+			neuron_id.set(i);
+			NeuronWritable neuron = generateKey(type);
 			ArrayList<SynapticWeightWritable> adjlist = new ArrayList<SynapticWeightWritable>();
 
 			/*
@@ -60,11 +63,21 @@ public class NeuronInputMapper extends Mapper<LongWritable, Text, NeuronWritable
 				}
 			}
 			
-			context.write(neuron, AdjListWritable.fromArrayList(adjlist));
+			multi_writable.setWritableType(MultiWritableWrapper.NeuronObj);
+			multi_writable.setWeight(999); // just an arbitrary number, as a place holder
+			multi_writable.setNeuronWritable(neuron);
+			multi_writable.setAdjListWritable(AdjListWritable.fromArrayList(adjlist));
+			
+			// The following commented code is just to test if writing null to writable is ok. It is fine actually.
+			//multi_writable.setWritableType(MultiWritableWrapper.Synaptic_Weight);
+			//multi_writable.setNeuronWritable(null);
+			//multi_writable.setAdjListWritable(null);
+			
+			context.write(neuron_id, multi_writable);
 		}
 	}
 
-	private NeuronWritable generateKey(int id, char type) {
+	private NeuronWritable generateKey(char type) {
 		NeuronWritable neuron = new NeuronWritable();
 		float randf = randn.nextFloat();
 
@@ -86,7 +99,6 @@ public class NeuronInputMapper extends Mapper<LongWritable, Text, NeuronWritable
 		neuron.potential = -65;
 		neuron.recovery = neuron.potential * neuron.param_b;
 
-		neuron.id.set(id);
 		neuron.type = type;
 		neuron.synaptic_sum = 0;
 		neuron.fired = 'N';

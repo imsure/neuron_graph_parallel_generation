@@ -4,13 +4,12 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import org.apache.hadoop.io.WritableComparable;
+import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.FloatWritable;
 
-public class NeuronWritable implements WritableComparable<NeuronWritable> {
+public class NeuronWritable implements Writable {
 
-	public IntWritable id;
 	public char type;
 	public int time; // In simulation, it is actually the number iteration
 	public float param_a, param_b, param_c, param_d;
@@ -20,11 +19,9 @@ public class NeuronWritable implements WritableComparable<NeuronWritable> {
 	public char fired;
 	
 	public NeuronWritable() {
-		id = new IntWritable();
 	}
 	
 	public void write(DataOutput out) throws IOException {
-		id.write(out);
 		out.writeChar(type);
 		out.writeInt(time);
 		out.writeFloat(param_a);
@@ -38,7 +35,6 @@ public class NeuronWritable implements WritableComparable<NeuronWritable> {
 	}
 	
 	public void readFields(DataInput in) throws IOException {
-		id.readFields(in);
 		type = in.readChar();
 		time = in.readInt();
 		param_a = in.readFloat();
@@ -52,32 +48,8 @@ public class NeuronWritable implements WritableComparable<NeuronWritable> {
 	}
 	
 	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) return true;
-		if (obj == null) return false;
-		if (this.getClass() != obj.getClass()) return false;
-		
-		NeuronWritable other = (NeuronWritable) obj;
-		if (id.equals(other.id)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	public int compareTo(NeuronWritable other) {
-		return id.compareTo(other.id);
-	}
-	
-	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(id.get()).append(',');
 		sb.append(type).append(',');
 		sb.append(time).append(',');
 		sb.append(param_a).append(',');

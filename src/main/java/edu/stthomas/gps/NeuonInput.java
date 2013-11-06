@@ -4,7 +4,7 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.CompressionType;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.compress.SnappyCodec;
 import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
@@ -34,7 +34,7 @@ public class NeuonInput extends Configured implements Tool {
 		Job job = new Job(getConf());
 		
 		job.setJarByClass(this.getClass());
-		job.setJobName("Neurons' Adjacency List Generation");
+		job.setJobName("Neuron Graph Generation");
 		
 		FileInputFormat.addInputPath(job, new Path(input));
 		FileOutputFormat.setOutputPath(job, new Path(output));
@@ -48,9 +48,10 @@ public class NeuonInput extends Configured implements Tool {
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
 		job.setNumReduceTasks(0); // This is a mapper only job.
 		
-		job.setOutputKeyClass(NeuronWritable.class);
-		job.setOutputValueClass(AdjListWritable.class);
+		job.setOutputKeyClass(IntWritable.class);
+		job.setOutputValueClass(MultiWritableWrapper.class);
 		
+		// No need to do this if it is a mapper only job.
 		//job.setMapOutputKeyClass(NeuronWritable.class);
 		//job.setMapOutputValueClass(AdjListWritable.class);
 		
