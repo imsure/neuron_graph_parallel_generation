@@ -45,15 +45,17 @@ public class NeuonInput extends Configured implements Tool {
 		SequenceFileOutputFormat.setOutputCompressionType(job, CompressionType.BLOCK);
 		
 		job.setMapperClass(NeuronInputMapper.class);
+		job.setReducerClass(NeuronInputReducer.class);
+		job.setPartitionerClass(NeuronIDRangePartitioner.class);
+		
 		job.setOutputFormatClass(SequenceFileOutputFormat.class);
-		job.setNumReduceTasks(0); // This is a mapper only job.
+		
+		// Range paritioner decides how many reducers we need.
+		job.setNumReduceTasks(NeuronIDRangePartitioner.TotalNumOfNeurons 
+				/ NeuronIDRangePartitioner.NumOfNeuronsPerPartition);
 		
 		job.setOutputKeyClass(IntWritable.class);
 		job.setOutputValueClass(MultiWritableWrapper.class);
-		
-		// No need to do this if it is a mapper only job.
-		//job.setMapOutputKeyClass(NeuronWritable.class);
-		//job.setMapOutputValueClass(AdjListWritable.class);
 		
 		return job.waitForCompletion(true) ? 0 : -1;
 	}

@@ -14,6 +14,9 @@ extends Reducer<IntWritable, MultiWritableWrapper, IntWritable, MultiWritableWra
 	public void reduce(IntWritable key, Iterable<MultiWritableWrapper> values, Context context) 
 			throws IOException, InterruptedException {
 		
+		/*
+		 * Simply emit key, value pairs.
+		 */
 		for (MultiWritableWrapper value : values) {
 			context.write(key, value);
 		}
