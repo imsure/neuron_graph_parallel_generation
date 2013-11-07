@@ -21,12 +21,12 @@ To generate these files, we only need to provide:
 import os
 import shutil
 
-Total = 100000 # The total number of neurons
+Total = 1000 # The total number of neurons
 TypeE = 'e' # Excititory
 TypeI = 'i' # Inhibitory
-NumE = 80000
-NumI = 20000
-NumEPerFile = 300
+NumE = 800
+NumI = 200
+NumEPerFile = 200
 NumIPerFile = 200
 FileNamePrefix = 'neuron_meta'
 InputDir = 'neuron_meta'
