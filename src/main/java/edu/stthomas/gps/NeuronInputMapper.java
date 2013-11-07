@@ -63,8 +63,6 @@ public class NeuronInputMapper extends Mapper<LongWritable, Text, IntWritable, M
 				}
 			}
 			
-			multi_writable.setWritableType(MultiWritableWrapper.NeuronObj);
-			multi_writable.setWeight(999); // just an arbitrary number, as a place holder
 			multi_writable.setNeuronWritable(neuron);
 			multi_writable.setAdjListWritable(AdjListWritable.fromArrayList(adjlist));
 			
@@ -103,6 +101,9 @@ public class NeuronInputMapper extends Mapper<LongWritable, Text, IntWritable, M
 		neuron.synaptic_sum = 0;
 		neuron.fired = 'N';
 		neuron.time = 0;
+		
+		neuron.setTypeOfValue('N'); // Indicate this is a neuron structure. 
+		neuron.setWeight(999); // Just an arbitrary value as a place holder
 
 		return neuron;
 	}
