@@ -45,8 +45,8 @@ def partition(start, neuron_type, total_by_type, NumPerFile):
 
     n = 0
     while n < num_partition:
-        start_id = n * NumPerFile + 1
-        end_id = (n+1) * NumPerFile
+        start_id = start + n * NumPerFile
+        end_id = start + (n+1) * NumPerFile
 
         file_name = FileNamePrefix + str(n) + neuron_type + '.txt'
         fobj = open(os.path.join(InputDir, file_name), 'w')
