@@ -19,7 +19,7 @@ public class NeuronInputMapper extends Mapper<LongWritable, Text, IntWritable, M
 	private MultiWritableWrapper multi_writable = new MultiWritableWrapper();
 	private Random randn = new Random();
 	public static final float Excitatory_Prob = (float) 0.4;
-	public static final float Inhibitory_Prob = (float) 0.8;
+	public static final float Inhibitory_Prob = (float) 0.6;
 
 	@Override
 	public void map(LongWritable key, Text value, Context context) 
