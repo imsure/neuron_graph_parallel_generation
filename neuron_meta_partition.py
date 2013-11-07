@@ -26,11 +26,12 @@ TypeE = 'e' # Excititory
 TypeI = 'i' # Inhibitory
 NumE = 80000
 NumI = 20000
-NumPerFile = 500
+NumEPerFile = 300
+NumIPerFile = 200
 FileNamePrefix = 'neuron_meta'
 InputDir = 'neuron_meta'
 
-def partition(start, neuron_type, total_by_type):
+def partition(start, neuron_type, total_by_type, NumPerFile):
 
     start_id = 0
     end_id = 0
@@ -39,12 +40,14 @@ def partition(start, neuron_type, total_by_type):
     file_content = ''
 
     num_partition = total_by_type / NumPerFile
+        
     remaining = total_by_type - NumPerFile*num_partition
 
     n = 0
     while n < num_partition:
         start_id = n * NumPerFile + 1
         end_id = (n+1) * NumPerFile
+
         file_name = FileNamePrefix + str(n) + neuron_type + '.txt'
         fobj = open(os.path.join(InputDir, file_name), 'w')
         fobj.write(str(start_id)+','+str(end_id)+','+str(Total)+','+neuron_type+'\n')
@@ -56,5 +59,5 @@ if __name__ == '__main__':
         shutil.rmtree(InputDir)
 
     os.mkdir(InputDir)
-    partition(1, TypeE, NumE)
-    partition(NumE+1, TypeI, NumI)
+    partition(1, TypeE, NumE, NumEPerFile)
+    partition(NumE+1, TypeI, NumI, NumIPerFile)
